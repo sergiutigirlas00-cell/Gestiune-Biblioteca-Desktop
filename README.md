@@ -1,4 +1,4 @@
-# Gestiune-Biblioteca-Desktop
+# 📚 Gestiune-Biblioteca-Desktop
 
 Aplicație desktop pentru **gestionarea unei biblioteci**: evidența fondului de carte, a cititorilor și a împrumuturilor/retururilor.
 
@@ -7,7 +7,7 @@ Aplicație desktop pentru **gestionarea unei biblioteci**: evidența fondului de
 
 ---
 
-## Prototipul Figma
+## 🔗 Prototipul Figma
 
 - **Prototip interactiv (Prototype / Present):** https://www.figma.com/proto/fNgNvbk7SX0JIvGZVJrc2l/Laborator-7---Gestionarea-unei-biblioteci--PAD-?node-id=2-2&starting-point-node-id=2%3A2
 - **Fișierul de design:** https://www.figma.com/design/fNgNvbk7SX0JIvGZVJrc2l/Laborator-7---Gestionarea-unei-biblioteci--PAD-
@@ -37,7 +37,7 @@ Aplicație desktop pentru **gestionarea unei biblioteci**: evidența fondului de
 
 ---
 
-## Diagrama UML a cazurilor de utilizare
+## 🧩 Diagrama UML a cazurilor de utilizare
 
 **Actori:** Bibliotecar (principal), Administrator (generalizare a Bibliotecarului, plus rapoarte), Cititor (secundar).
 **Relații:** *Înregistrare împrumut* «include» *Verificare disponibilitate*; *Înregistrare carte nouă* «include» *Validare date*; *Calculare penalitate* «extend» *Înregistrare retur*.
@@ -46,7 +46,7 @@ Aplicație desktop pentru **gestionarea unei biblioteci**: evidența fondului de
 
 ---
 
-## Arhitectura modulară
+## 🏗️ Arhitectura modulară
 
 Arhitectură stratificată (3-tier) cu **MVVM** în stratul de prezentare. Fiecare strat comunică doar cu stratul de sub el, prin interfețe (Dependency Injection).
 
@@ -73,7 +73,7 @@ Arhitectură stratificată (3-tier) cu **MVVM** în stratul de prezentare. Fieca
 
 ---
 
-## Structura repository-ului
+## 📁 Structura repository-ului
 
 ```
 Gestiune-Biblioteca-Desktop/
@@ -91,7 +91,7 @@ Gestiune-Biblioteca-Desktop/
 └── README.md
 ```
 
-## Fluxul Git folosit
+## 🌿 Fluxul Git folosit
 
 ```bash
 git init -b main
