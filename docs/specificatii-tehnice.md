@@ -9,27 +9,27 @@ Aplicație desktop pentru evidența fondului de carte al unei biblioteci și a �
 
 ## 2. Actori
 
-| Actor | Descriere |
-|---|---|
-| Bibliotecar | Utilizatorul principal: gestionează catalogul, cititorii, împrumuturile și retururile. |
-| Administrator | Moștenește drepturile bibliotecarului, generează rapoarte și gestionează conturile. |
-| Cititor | Actor secundar: primește și returnează cărți, are istoric de împrumuturi. |
+| Actor | Tip | Descriere | Cazuri de utilizare |
+|---|---|---|---|
+| Bibliotecar | principal | Gestionează catalogul, cititorii, împrumuturile și retururile. | UC-01 – UC-07 |
+| Administrator | principal | Moștenește rolul Bibliotecarului (generalizare); în plus generează rapoarte. | UC-01 – UC-08 |
+| Cititor | secundar | Primește și returnează cărți, are istoric de împrumuturi. | UC-06, UC-07, UC-09 |
 
 ## 3. Cerințe funcționale
 
-| ID | Cerință |
-|---|---|
-| CF-01 | Autentificarea utilizatorului (Bibliotecar / Administrator). |
-| CF-02 | Afișarea catalogului de cărți cu paginare. |
-| CF-03 | Căutare după titlu, autor sau ISBN și filtrare după gen, autor, an și disponibilitate. |
-| CF-04 | Înregistrarea unei cărți noi într-o fereastră modală, cu validarea câmpurilor obligatorii și a ISBN-ului. |
-| CF-05 | Editarea și ștergerea unei cărți. |
-| CF-06 | Înregistrarea unui împrumut: selectare cititor, selectare exemplar, termen de returnare (implicit 14 zile). |
-| CF-07 | Verificarea disponibilității exemplarului înainte de împrumut. |
-| CF-08 | Înregistrarea returului, cu calcularea automată a penalității pentru întârziere (5 MDL/zi). |
-| CF-09 | Lista împrumuturilor active, cu evidențierea celor întârziate. |
-| CF-10 | Gestionarea cititorilor și vizualizarea istoricului de împrumuturi. |
-| CF-11 | Generarea de rapoarte (PDF / Excel). |
+| ID | Cerință | Caz de utilizare |
+|---|---|---|
+| CF-01 | Autentificarea utilizatorului (Bibliotecar / Administrator). | UC-01 |
+| CF-02 | Afișarea catalogului de cărți cu paginare. | UC-02 |
+| CF-03 | Căutare după titlu, autor sau ISBN și filtrare după gen, autor, an și disponibilitate. | UC-02 |
+| CF-04 | Înregistrarea unei cărți noi într-o fereastră modală, cu validarea câmpurilor obligatorii și a ISBN-ului. | UC-03, UC-10 |
+| CF-05 | Editarea și ștergerea unei cărți. | UC-04 |
+| CF-06 | Înregistrarea unui împrumut: selectare cititor, selectare exemplar, termen de returnare (implicit 14 zile). | UC-06 |
+| CF-07 | Verificarea disponibilității exemplarului înainte de împrumut. | UC-11 |
+| CF-08 | Înregistrarea returului, cu calcularea automată a penalității pentru întârziere (5 MDL/zi). | UC-07, UC-12 |
+| CF-09 | Lista împrumuturilor active, cu evidențierea celor întârziate. | UC-06, UC-07 |
+| CF-10 | Gestionarea cititorilor și vizualizarea istoricului de împrumuturi. | UC-05, UC-09 |
+| CF-11 | Generarea de rapoarte (PDF / Excel). | UC-08 |
 
 ## 4. Cerințe nefuncționale
 
@@ -50,7 +50,7 @@ Aplicație desktop pentru evidența fondului de carte al unei biblioteci și a �
 
 ## 6. Arhitectura
 
-Arhitectură stratificată (3-tier) cu MVVM în stratul de prezentare. Vezi `diagrams/arhitectura-modulara.png` și secțiunea „Arhitectura” din README.
+Arhitectură stratificată (3-tier) cu MVVM în stratul de prezentare. Vezi `diagrams/arhitectura-modulara.png` și secțiunea „Arhitectura modulară” din README. Diagrama cazurilor de utilizare este în `diagrams/uml-use-case.png`.
 
 - **Biblioteca.UI**: Views și ViewModels (CatalogView, BookFormDialog, LoanReturnView, ReadersView, ReportsView).
 - **Biblioteca.Services**: logica aplicației (BookService, LoanService, PenaltyService, ReaderService, ReportService).

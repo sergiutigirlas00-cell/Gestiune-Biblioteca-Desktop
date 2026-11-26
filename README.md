@@ -29,18 +29,41 @@ Aplicație desktop pentru **gestionarea unei biblioteci**: evidența fondului de
 
 ### Fluxul de navigare
 
-```
-01 Catalog ──「+ Carte nouă」──────────────▶ 02 Modal Carte nouă ──「Salvează / Anulează / ×」──▶ 01
-01 Catalog ──「Împrumut / Retur」「Împrumută」──▶ 03 Împrumut ◀──「tab Împrumut / Retur」──▶ 04 Retur
-03 / 04   ──「Înregistrează / Confirmă / Anulează / ‹ Înapoi」──▶ 01 Catalog
-```
+| Din ecranul | Acțiune (click) | Ajunge la |
+|---|---|---|
+| 01 Catalog | „+ Carte nouă” | 02 Fereastra modală |
+| 01 Catalog | „Împrumut / Retur”, „Împrumută” sau meniul „Împrumuturi și retururi” | 03 Împrumut |
+| 02 Fereastra modală | „Salvează cartea”, „Anulează” sau „×” | 01 Catalog |
+| 03 Împrumut | tab „Retur” sau „Returnează” | 04 Retur |
+| 04 Retur | tab „Împrumut” | 03 Împrumut |
+| 03 / 04 | „Înregistrează împrumutul”, „Confirmă returul”, „Anulează”, „‹ Înapoi la catalog” sau meniul „Catalog cărți” | 01 Catalog |
 
 ---
 
 ## 🧩 Diagrama UML a cazurilor de utilizare
 
-**Actori:** Bibliotecar (principal), Administrator (generalizare a Bibliotecarului, plus rapoarte), Cititor (secundar).
-**Relații:** *Înregistrare împrumut* «include» *Verificare disponibilitate*; *Înregistrare carte nouă* «include» *Validare date*; *Calculare penalitate* «extend» *Înregistrare retur*.
+| Actor | Tip | Cazuri de utilizare |
+|---|---|---|
+| Bibliotecar | principal | UC-01 – UC-07 |
+| Administrator | principal (generalizare a Bibliotecarului) | moștenește UC-01 – UC-07, plus UC-08 |
+| Cititor | secundar | UC-06, UC-07, UC-09 |
+
+| ID | Caz de utilizare | Relații |
+|---|---|---|
+| UC-01 | Autentificare în sistem | |
+| UC-02 | Căutare și filtrare cărți | |
+| UC-03 | Înregistrare carte nouă | «include» UC-10 |
+| UC-04 | Editare / ștergere carte | |
+| UC-05 | Gestionare cititori | |
+| UC-06 | Înregistrare împrumut | «include» UC-11 |
+| UC-07 | Înregistrare retur | extins de UC-12 |
+| UC-08 | Generare rapoarte | |
+| UC-09 | Vizualizare istoric împrumuturi | |
+| UC-10 | Validare date carte (ISBN, câmpuri) | inclus în UC-03 |
+| UC-11 | Verificare disponibilitate exemplar | inclus în UC-06 |
+| UC-12 | Calculare penalitate întârziere | «extend» UC-07 |
+
+**Reguli de business:** maximum 5 cărți per cititor, termen de returnare de 14 zile, penalitate de 5 MDL pentru fiecare zi de întârziere.
 
 ![Diagrama Use Case](diagrams/uml-use-case.png)
 
@@ -48,26 +71,18 @@ Aplicație desktop pentru **gestionarea unei biblioteci**: evidența fondului de
 
 ## 🏗️ Arhitectura modulară
 
-Arhitectură stratificată (3-tier) cu **MVVM** în stratul de prezentare. Fiecare strat comunică doar cu stratul de sub el, prin interfețe (Dependency Injection).
+Arhitectură stratificată (3-tier) cu **MVVM** în stratul de prezentare. Fiecare strat comunică doar cu stratul de sub el, prin interfețe injectate (Dependency Injection). Modelele de domeniu sunt comune tuturor straturilor.
 
-```
-┌──────────────────────────────────────────────────────────────┐
-│ 1. PREZENTARE (Biblioteca.UI): WPF, Views + ViewModels       │
-│    CatalogView · BookFormDialog · LoanReturnView · ReadersView│
-└───────────────▲──────────────────────────────────────────────┘
-                │ IBookService, ILoanService … (DI)
-┌───────────────┴──────────────────────────────────────────────┐   ┌──────────────────────┐
-│ 2. LOGICA APLICAȚIEI (Biblioteca.Services)                   │   │ Biblioteca.Core      │
-│    BookService · LoanService · PenaltyService · ReaderService │◀─▶│ (modele de domeniu)  │
-│    ReportService · reguli: max 5 cărți, 14 zile, 5 MDL/zi    │   │ Carte · Exemplar     │
-└───────────────▲──────────────────────────────────────────────┘   │ Cititor · Împrumut   │
-                │ IRepository<T>                                    │ Utilizator           │
-┌───────────────┴──────────────────────────────────────────────┐   └──────────────────────┘
-│ 3. ACCES LA DATE (Biblioteca.Data)                           │
-│    BookRepository · LoanRepository · ReaderRepository        │
-│    LibraryDbContext (EF Core) ──▶ SQLite / SQL Server        │
-└──────────────────────────────────────────────────────────────┘
-```
+| Strat / proiect | Responsabilitate | Module |
+|---|---|---|
+| **1. Biblioteca.UI** (prezentare) | afișare, validare de formular, comenzi; fără reguli de business | CatalogView (ecran 01), BookFormDialog (02), LoanReturnView (03–04), ReadersView, ReportsView |
+| **2. Biblioteca.Services** (logica aplicației) | regulile de business: limite, termene, penalități, disponibilitate | BookService, LoanService, PenaltyService, ReaderService, ReportService |
+| **3. Biblioteca.Data** (acces la date) | persistență prin Repository pattern + EF Core | BookRepository, LoanRepository, ReaderRepository, LibraryDbContext, SQLite / SQL Server |
+| **Biblioteca.Core** (modele) | entități partajate | Carte, Exemplar, Cititor, Împrumut, Utilizator |
+
+Dependențe: `UI → Services` (prin `IBookService`, `ILoanService` …), `Services → Data` (prin `IRepository<T>`), toate → `Core`.
+
+**Tehnologii:** .NET 8, WPF (MVVM), Entity Framework Core, SQLite.
 
 ![Arhitectura modulară](diagrams/arhitectura-modulara.png)
 
@@ -105,3 +120,5 @@ git commit -m "Adauga prototipul Figma si diagrama UML"
 git push -u origin feature/prototip-figma-uml
 # → Pull Request pe GitHub: feature/prototip-figma-uml → main → Merge
 ```
+
+Pull Request-ul de integrare: [#1 · Adauga prototipul Figma, diagrama UML si README](https://github.com/sergiutigirlas00-cell/Gestiune-Biblioteca-Desktop/pull/1) (merged în `main`).
